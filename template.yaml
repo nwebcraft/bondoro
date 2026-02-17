@@ -1,0 +1,143 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Bondoro - Bonbon Drop Seal Notifier
+
+Globals:
+  Function:
+    Runtime: ruby3.2
+    Timeout: 60
+    MemorySize: 256
+    Environment:
+      Variables:
+        DYNAMODB_PRODUCTS_TABLE: !Ref ProductsTable
+        DYNAMODB_USERS_TABLE: !Ref UsersTable
+        LINE_CHANNEL_SECRET: !Ref LineChannelSecret
+        LINE_CHANNEL_ACCESS_TOKEN: !Ref LineChannelAccessToken
+        RAKUTEN_APP_ID: !Ref RakutenAppId
+        YAHOO_APP_ID: !Ref YahooAppId
+
+Parameters:
+  LineChannelSecret:
+    Type: String
+    NoEcho: true
+  LineChannelAccessToken:
+    Type: String
+    NoEcho: true
+  RakutenAppId:
+    Type: String
+    NoEcho: true
+  YahooAppId:
+    Type: String
+    NoEcho: true
+
+Resources:
+  # Lambda Functions
+  ScraperFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/scraper.handler
+      Timeout: 300
+      MemorySize: 512
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        ScheduleEvent:
+          Type: Schedule
+          Properties:
+            Schedule: rate(3 hours)
+            Enabled: true
+
+  NotifierFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/notifier.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UsersTable
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt NotificationQueue.Arn
+            BatchSize: 1
+
+  WebhookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/webhook.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+      Events:
+        LineWebhook:
+          Type: Api
+          Properties:
+            Path: /webhook
+            Method: post
+
+  # SQS Queue
+  NotificationQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: bondoro-notification-queue
+      VisibilityTimeout: 120
+
+  # DynamoDB Tables
+  ProductsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: bondoro-products
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+        - AttributeName: notified_status
+          AttributeType: S
+        - AttributeName: first_seen_at
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: notified-index
+          KeySchema:
+            - AttributeName: notified_status
+              KeyType: HASH
+            - AttributeName: first_seen_at
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: bondoro-users
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+
+Outputs:
+  WebhookApiUrl:
+    Description: LINE Webhook URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/webhook"
+  ScraperFunctionArn:
+    Description: Scraper Lambda ARN
+    Value: !GetAtt ScraperFunction.Arn
+  NotifierFunctionArn:
+    Description: Notifier Lambda ARN
+    Value: !GetAtt NotifierFunction.Arn
