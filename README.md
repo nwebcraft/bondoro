@@ -8,7 +8,7 @@
 
 ## 機能
 
-- **自動監視**: Amazon、楽天市場、Yahoo!ショッピング、アメブロを定期チェック
+- **自動監視**: 楽天市場、Yahoo!ショッピング、アメブロを定期チェック
 - **LINE通知**: 新着情報をLINEプッシュ通知でお届け
 - **重複排除**: 同じ商品の重複通知を防止
 - **カスタマイズ**: 監視キーワードや通知設定を変更可能
@@ -83,8 +83,6 @@ cp .env.example .env
 # 以下の環境変数を設定
 LINE_CHANNEL_SECRET=your_channel_secret
 LINE_CHANNEL_ACCESS_TOKEN=your_access_token
-AMAZON_ACCESS_KEY=your_amazon_key
-AMAZON_SECRET_KEY=your_amazon_secret
 RAKUTEN_APP_ID=your_rakuten_app_id
 YAHOO_APP_ID=your_yahoo_app_id
 ```
@@ -109,6 +107,14 @@ bundle exec rspec
 # ローカルでLambda実行
 sam local invoke ScraperFunction
 ```
+
+## 免責事項
+
+- 本ツールは商品の在庫状況や販売情報の通知を目的としたものであり、情報の正確性・即時性を保証するものではありません。
+- 本ツールの利用により生じた損害（購入機会の逸失、誤情報に基づく購入等）について、開発者は一切の責任を負いません。
+- 各ECサイト・ブログサービスの利用規約およびAPIの利用規約を遵守してご利用ください。利用規約の変更等により、本ツールの一部または全部の機能が利用できなくなる場合があります。
+- 「ボンボンドロップシール」「BONBON DROP」はクーリア（Q-LiA）の商品名です。本プロジェクトはクーリア（Q-LiA）とは一切関係ありません。
+- 各ECサイト名・サービス名は各社の商標または登録商標です。
 
 ## ライセンス
 

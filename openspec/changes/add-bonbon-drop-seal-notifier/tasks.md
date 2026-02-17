@@ -26,9 +26,8 @@
 
 ### 3.2 ECサイトスクレイパー
 
-- [ ] 3.2.1 Amazon PA-API連携 (`scrapers/amazon.rb`)
-- [ ] 3.2.2 楽天商品検索API連携 (`scrapers/rakuten.rb`)
-- [ ] 3.2.3 Yahoo!ショッピングAPI連携 (`scrapers/yahoo.rb`)
+- [ ] 3.2.1 楽天商品検索API連携 (`scrapers/rakuten.rb`)
+- [ ] 3.2.2 Yahoo!ショッピングAPI連携 (`scrapers/yahoo.rb`)
 
 ### 3.3 ブログスクレイパー
 
@@ -80,9 +79,8 @@
 
 ## 9. 外部API設定
 
-- [ ] 9.1 Amazon PA-API アカウント・認証設定
-- [ ] 9.2 楽天API アプリID取得
-- [ ] 9.3 Yahoo! デベロッパーAPI設定
+- [ ] 9.1 楽天API アプリID取得
+- [ ] 9.2 Yahoo! デベロッパーAPI設定
 
 ## 依存関係
 

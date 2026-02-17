@@ -4,7 +4,7 @@
 
 ### 背景
 - クーリア（Q-LiA）のボンボンドロップシールは平成レトロブームで大人気
-- 複数ECサイト（Amazon, 楽天, Yahoo!）とブログ（アメブロ）を監視する必要がある
+- 複数ECサイト（楽天, Yahoo!）とブログ（アメブロ）を監視する必要がある
 - ユーザーが手動でチェックする負担を軽減したい
 
 ### 制約
@@ -20,7 +20,7 @@
 ## Goals / Non-Goals
 
 ### Goals
-- 複数ECサイト + アメブロから「ボンボンドロップ」関連商品情報を自動収集
+- 楽天、Yahoo! + アメブロから「ボンボンドロップ」関連商品情報を自動収集
 - 新着情報をLINEでプッシュ通知（1通に集約）
 - ユーザーが通知設定をカスタマイズ可能
 - 重複通知の排除
@@ -33,6 +33,7 @@
 - Web管理画面（MVP外）
 - メール通知（MVP外）
 - メルカリ対応（対象外）
+- Amazon PA-API連携（MVP外、アソシエイト審査が必要）
 
 ## Architecture Overview
 
@@ -86,10 +87,11 @@
 
 | サイト | 方式 | 理由 |
 |--------|------|------|
-| Amazon | PA-API (Product Advertising API) | 公式API、安定性◎ |
 | 楽天 | 楽天商品検索API | 公式API、無料枠あり |
 | Yahoo! | Yahoo!ショッピングAPI | 公式API |
 | アメブロ | RSSフィード + スクレイピング (Nokogiri) | MVP対象 |
+
+> **Note:** Amazon PA-APIはアソシエイト審査が必要なため、MVP後に追加予定。
 
 **注意:**
 - 各サイトの利用規約を遵守
@@ -108,7 +110,7 @@
   url: "https://...",
   title: "ボンボンドロップシール...",
   price: 1200,
-  source: "amazon",
+  source: "rakuten",
   first_seen_at: "2024-01-01T00:00:00Z",
   last_seen_at: "2024-01-02T00:00:00Z",
   notified: true
@@ -124,7 +126,7 @@
 
 **sk (ソートキー): `SOURCE#<source_name>`**
 - 同一商品が複数ソースに存在する場合を想定
-- 例: `SOURCE#amazon`, `SOURCE#rakuten`
+- 例: `SOURCE#rakuten`, `SOURCE#yahoo`
 - pk + sk の組み合わせでユニークに
 
 #### 重複排除ロジック
@@ -186,7 +188,7 @@ GSI1:
   display_name: "ユーザー名",
   notification_enabled: true,
   keywords: ["ボンボンドロップ", "BONBON DROP"],
-  sources: ["amazon", "rakuten", "yahoo", "ameblo"],
+  sources: ["rakuten", "yahoo", "ameblo"],
   created_at: "2024-01-01T00:00:00Z",
   updated_at: "2024-01-02T00:00:00Z"
 }
@@ -245,18 +247,17 @@ DynamoDBでは「Single Table Design」パターンが推奨される場合が�
 ```
 🆕 新着情報！
 
-【Amazon】
-ボンボンドロップシール ○○柄
-💰 ¥1,200
-🔗 https://amazon.co.jp/...
-
 【楽天市場】
 ボンボンドロップシール △△セット
 💰 ¥980
 🔗 https://item.rakuten.co.jp/...
 
+【アメブロ】
+ボンボンドロップシール入荷情報！
+🔗 https://ameblo.jp/...
+
 ---
-全3件の新着がありました
+全2件の新着がありました
 ```
 
 ## Risks / Trade-offs
@@ -311,7 +312,6 @@ bondoro/
 │   │   └── webhook.rb      # LINE Webhook Lambda
 │   ├── scrapers/
 │   │   ├── base.rb
-│   │   ├── amazon.rb
 │   │   ├── rakuten.rb
 │   │   ├── yahoo.rb
 │   │   └── ameblo.rb       # アメブロスクレイパー

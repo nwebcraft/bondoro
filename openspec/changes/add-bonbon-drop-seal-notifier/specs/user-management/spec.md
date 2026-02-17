@@ -27,7 +27,7 @@ LINE友だち登録、ユーザー設定管理、コマンド処理を担当す�
 
 - `notification_enabled`: `true`
 - `keywords`: `["ボンボンドロップ", "BONBON DROP"]`
-- `sources`: `["amazon", "rakuten", "yahoo", "ameblo"]`
+- `sources`: `["rakuten", "yahoo", "ameblo"]`
 
 #### Scenario: デフォルト設定の適用
 
