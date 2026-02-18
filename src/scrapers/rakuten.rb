@@ -5,13 +5,14 @@ require_relative 'base'
 module Bondoro
   module Scrapers
     class Rakuten < Base
-      BASE_URL     = 'https://app.rakuten.co.jp'
-      ENDPOINT     = '/services/api/IchibaItem/Search/20170706'
+      BASE_URL     = 'https://openapi.rakuten.co.jp'
+      ENDPOINT     = '/ichibams/api/IchibaItem/Search/20220601'
       SOURCE       = 'rakuten'
       MAX_PER_PAGE = 30
 
       def initialize
-        @app_id = ENV.fetch('RAKUTEN_APP_ID')
+        @app_id     = ENV.fetch('RAKUTEN_APP_ID')
+        @access_key = ENV.fetch('RAKUTEN_ACCESS_KEY')
       end
 
       def fetch
@@ -32,9 +33,10 @@ module Bondoro
         client = http_client(BASE_URL)
         data = get(client, ENDPOINT, {
           applicationId: @app_id,
-          keyword: keyword,
-          hits: MAX_PER_PAGE,
-          sort: '-updateTimestamp'
+          accessKey:     @access_key,
+          keyword:       keyword,
+          hits:          MAX_PER_PAGE,
+          sort:          '-updateTimestamp'
         })
 
         return [] unless data&.dig('Items')

@@ -21,6 +21,7 @@ deploy: build
 	    LineChannelSecret='$(LINE_CHANNEL_SECRET)' \
 	    LineChannelAccessToken='$(LINE_CHANNEL_ACCESS_TOKEN)' \
 	    RakutenAppId='$(RAKUTEN_APP_ID)' \
+	    RakutenAccessKey='$(RAKUTEN_ACCESS_KEY)' \
 	    YahooAppId='$(YAHOO_APP_ID)' \
 	    AlertEmail='$(ALERT_EMAIL)'
 

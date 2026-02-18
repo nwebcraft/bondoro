@@ -6,7 +6,7 @@ RSpec.describe Bondoro::Scrapers::Rakuten do
   subject(:scraper) { described_class.new }
 
   before do
-    stub_const('ENV', ENV.to_h.merge('RAKUTEN_APP_ID' => 'test_app_id'))
+    stub_const('ENV', ENV.to_h.merge('RAKUTEN_APP_ID' => 'test_app_id', 'RAKUTEN_ACCESS_KEY' => 'test_access_key'))
   end
 
   describe '#fetch' do
@@ -32,7 +32,7 @@ RSpec.describe Bondoro::Scrapers::Rakuten do
     end
 
     before do
-      stub_request(:get, /app\.rakuten\.co\.jp/)
+      stub_request(:get, /openapi\.rakuten\.co\.jp/)
         .to_return(status: 200, body: api_response, headers: { 'Content-Type' => 'application/json' })
     end
 
@@ -60,7 +60,7 @@ RSpec.describe Bondoro::Scrapers::Rakuten do
 
   describe '#fetch APIエラーの場合' do
     before do
-      stub_request(:get, /app\.rakuten\.co\.jp/).to_return(status: 500)
+      stub_request(:get, /openapi\.rakuten\.co\.jp/).to_return(status: 500)
     end
 
     it '空配列を返す' do
