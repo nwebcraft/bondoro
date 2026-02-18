@@ -15,6 +15,7 @@ Globals:
         LINE_CHANNEL_ACCESS_TOKEN: !Ref LineChannelAccessToken
         RAKUTEN_APP_ID: !Ref RakutenAppId
         YAHOO_APP_ID: !Ref YahooAppId
+        NOTIFICATION_QUEUE_URL: !Ref NotificationQueue
 
 Parameters:
   LineChannelSecret:

@@ -21,22 +21,22 @@
 
 ### 3.1 基盤
 
-- [ ] 3.1.1 Baseスクレイパークラス作成 (`scrapers/base.rb`)
-- [ ] 3.1.2 重複排除サービス作成 (`services/deduplicator.rb`)
+- [x] 3.1.1 Baseスクレイパークラス作成 (`scrapers/base.rb`)
+- [x] 3.1.2 重複排除サービス作成 (`services/deduplicator.rb`)
 
 ### 3.2 ECサイトスクレイパー
 
-- [ ] 3.2.1 楽天商品検索API連携 (`scrapers/rakuten.rb`)
-- [ ] 3.2.2 Yahoo!ショッピングAPI連携 (`scrapers/yahoo.rb`)
+- [x] 3.2.1 楽天商品検索API連携 (`scrapers/rakuten.rb`)
+- [x] 3.2.2 Yahoo!ショッピングAPI連携 (`scrapers/yahoo.rb`)
 
 ### 3.3 ブログスクレイパー
 
-- [ ] 3.3.1 アメブロRSS/スクレイパー (`scrapers/ameblo.rb`)
+- [x] 3.3.1 アメブロRSS/スクレイパー (`scrapers/ameblo.rb`)
 
 ### 3.4 スクレイパーLambdaハンドラ
 
-- [ ] 3.4.1 Lambdaハンドラ作成 (`handlers/scraper.rb`)
-- [ ] 3.4.2 EventBridgeスケジュール設定（SAMテンプレート）
+- [x] 3.4.1 Lambdaハンドラ作成 (`handlers/scraper.rb`)
+- [x] 3.4.2 EventBridgeスケジュール設定（SAMテンプレート）
 
 ## 4. LINE通知機能実装
 
