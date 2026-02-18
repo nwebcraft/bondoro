@@ -29,6 +29,16 @@ module Bondoro
 
       private
 
+      def http_client(base_url)
+        Faraday.new(url: base_url) do |f|
+          f.headers['User-Agent'] = USER_AGENT
+          f.headers['Origin']     = 'https://github.com'
+          f.headers['Referer']    = 'https://github.com/'
+          f.response :raise_error
+          f.adapter Faraday.default_adapter
+        end
+      end
+
       def search(keyword)
         client = http_client(BASE_URL)
         data = get(client, ENDPOINT, {
