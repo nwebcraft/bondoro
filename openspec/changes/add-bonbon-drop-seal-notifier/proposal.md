@@ -40,7 +40,7 @@
 |---------------|------|------|
 | 実行環境 | AWS Lambda | サーバーレス、コスト効率、スケーラブル |
 | 言語 | Ruby 3.2+ | 開発者のスキルセット、Nokogiriの実績 |
-| スクレイピング | Nokogiri + Ferrum | 静的/動的ページ両対応 |
+| スクレイピング | Nokogiri | RSS・APIレスポンスのパース |
 | 通知 | LINE Messaging API | 日本での普及率、プッシュ通知対応 |
 | データベース | DynamoDB | サーバーレス、スケーラブル、低コスト |
 | スケジューラ | EventBridge | Lambda定期実行 |

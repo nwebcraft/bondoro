@@ -80,6 +80,7 @@ cp .env.example .env
 LINE_CHANNEL_SECRET=your_channel_secret
 LINE_CHANNEL_ACCESS_TOKEN=your_access_token
 RAKUTEN_APP_ID=your_rakuten_app_id
+RAKUTEN_ACCESS_KEY=your_rakuten_access_key
 YAHOO_APP_ID=your_yahoo_app_id
 ```
 
