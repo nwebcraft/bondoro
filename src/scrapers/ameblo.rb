@@ -1,23 +1,20 @@
 # frozen_string_literal: true
 
-require 'rss'
-require 'open-uri'
 require 'nokogiri'
 require_relative 'base'
 
 module Bondoro
   module Scrapers
     class Ameblo < Base
-      SOURCE = 'ameblo'
-
-      # アメブロのキーワード検索RSS
-      RSS_URL_TEMPLATE = 'https://blog.ameba.jp/ucs/keyword/srchkeyword.do?keyword=%s&orderby=1'.freeze
+      SOURCE   = 'ameblo'
+      BASE_URL = 'https://blogtag.ameba.jp'.freeze
+      TAG_PATH = '/news/%s'.freeze
 
       def fetch
         results = []
 
         SEARCH_KEYWORDS.each do |keyword|
-          items = fetch_rss(keyword)
+          items = fetch_by_tag(keyword)
           results.concat(items)
           sleep_between_requests(2)
         end
@@ -27,47 +24,25 @@ module Bondoro
 
       private
 
-      def fetch_rss(keyword)
-        url = format(RSS_URL_TEMPLATE, URI.encode_www_form_component(keyword))
-        feed = RSS::Parser.parse(URI.parse(url).open.read, false)
-        return [] unless feed&.items
-
-        feed.items.map { |item| parse_item(item) }
-      rescue StandardError => e
-        log_error(e)
-        fetch_by_scraping(keyword)
-      end
-
-      def fetch_by_scraping(keyword)
-        url = format(RSS_URL_TEMPLATE, URI.encode_www_form_component(keyword))
-        html = URI.parse(url).open.read
-        doc = Nokogiri::HTML(html)
-
-        doc.css('item, .searchResult__item').map do |item|
-          title_el = item.at_css('title, .searchResult__title')
-          link_el  = item.at_css('link, a')
-          next unless title_el && link_el
-
-          {
-            title:  title_el.text.strip,
-            url:    link_el['href'] || link_el.text.strip,
-            price:  nil,
-            source: SOURCE
-          }
-        end.compact
-      rescue StandardError => e
+      def fetch_by_tag(keyword)
+        client = http_client(BASE_URL)
+        path   = format(TAG_PATH, URI.encode_www_form_component(keyword))
+        response = client.get(path)
+        parse_html(response.body)
+      rescue Faraday::Error => e
         log_error(e)
         []
       end
 
-      def parse_item(item)
-        title = item.title
-        {
-          title:  title.respond_to?(:content) ? title.content : title.to_s,
-          url:    item.link,
-          price:  nil,
-          source: SOURCE
-        }
+      def parse_html(html)
+        doc = Nokogiri::HTML(html)
+        doc.css('h2 a[href*="ameblo.jp"][href*="/entry-"]').filter_map do |a|
+          url   = a['href']
+          title = a.at_css('span')&.text&.strip
+          next if url.nil? || title.nil? || title.empty?
+
+          { title: title, url: url, price: nil, source: SOURCE }
+        end
       end
     end
   end

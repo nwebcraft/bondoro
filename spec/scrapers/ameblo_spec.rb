@@ -5,31 +5,29 @@ require 'spec_helper'
 RSpec.describe Bondoro::Scrapers::Ameblo do
   subject(:scraper) { described_class.new }
 
-  describe '#fetch' do
-    let(:rss_body) do
-      <<~RSS
-        <?xml version="1.0" encoding="UTF-8"?>
-        <rss version="2.0">
-          <channel>
-            <title>アメブロ検索結果</title>
-            <item>
-              <title>ボンボンドロップシール入荷しました！</title>
-              <link>https://ameblo.jp/shop-example/entry-001.html</link>
-              <description>本日入荷しました！</description>
-            </item>
-            <item>
-              <title>BONBON DROP 新作が届いた</title>
-              <link>https://ameblo.jp/shop-example/entry-002.html</link>
-              <description>新作シールです</description>
-            </item>
-          </channel>
-        </rss>
-      RSS
-    end
+  let(:html_body) do
+    <<~HTML
+      <html><body>
+        <ul>
+          <li>
+            <h2><a href="https://ameblo.jp/shop-example/entry-001.html" rel="noopener">
+              <span>ボンボンドロップシール入荷しました！</span>
+            </a></h2>
+          </li>
+          <li>
+            <h2><a href="https://ameblo.jp/shop-example/entry-002.html" rel="noopener">
+              <span>BONBON DROP 新作が届いた</span>
+            </a></h2>
+          </li>
+        </ul>
+      </body></html>
+    HTML
+  end
 
+  describe '#fetch' do
     before do
-      stub_request(:get, /blog\.ameba\.jp/)
-        .to_return(status: 200, body: rss_body, headers: { 'Content-Type' => 'application/rss+xml' })
+      stub_request(:get, /blogtag\.ameba\.jp/)
+        .to_return(status: 200, body: html_body, headers: { 'Content-Type' => 'text/html' })
     end
 
     it '記事リストを返す' do
@@ -54,9 +52,9 @@ RSpec.describe Bondoro::Scrapers::Ameblo do
     end
   end
 
-  describe '#fetch RSSエラーの場合' do
+  describe '#fetch エラーの場合' do
     before do
-      stub_request(:get, /blog\.ameba\.jp/).to_return(status: 503)
+      stub_request(:get, /blogtag\.ameba\.jp/).to_return(status: 503)
     end
 
     it '空配列を返す' do
