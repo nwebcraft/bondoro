@@ -61,8 +61,9 @@ module Bondoro
       end
 
       def parse_item(item)
+        title = item.title
         {
-          title:  item.title&.content || item.title.to_s,
+          title:  title.respond_to?(:content) ? title.content : title.to_s,
           url:    item.link,
           price:  nil,
           source: SOURCE
