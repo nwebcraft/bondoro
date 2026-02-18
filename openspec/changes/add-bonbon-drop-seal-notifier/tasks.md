@@ -13,9 +13,9 @@
 - [x] 2.1 Productsテーブル定義（SAMテンプレート）
 - [x] 2.2 Usersテーブル定義（SAMテンプレート）
 - [x] 2.3 GSI設計（notified商品取得用）
-- [ ] 2.4 DynamoDBクライアントラッパー作成 (`lib/dynamodb_client.rb`)
-- [ ] 2.5 Productモデル作成 (`models/product.rb`)
-- [ ] 2.6 Userモデル作成 (`models/user.rb`)
+- [x] 2.4 DynamoDBクライアントラッパー作成 (`lib/dynamodb_client.rb`)
+- [x] 2.5 Productモデル作成 (`models/product.rb`)
+- [x] 2.6 Userモデル作成 (`models/user.rb`)
 
 ## 3. スクレイピング機能実装
 
