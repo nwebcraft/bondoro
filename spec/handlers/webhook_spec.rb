@@ -17,7 +17,6 @@ RSpec.describe Bondoro::Handlers::Webhook do
     ))
     allow(Line::Bot::Client).to receive(:new).and_return(line_client_raw)
     allow(line_client_raw).to receive(:validate_signature).and_return(true)
-    allow(line_client_raw).to receive(:reply_message)
     allow(line_client_raw).to receive(:get_profile).and_return(
       instance_double(Net::HTTPSuccess, is_a?: true, body: { 'displayName' => 'テストユーザー' }.to_json)
     )
@@ -48,34 +47,19 @@ RSpec.describe Bondoro::Handlers::Webhook do
     let(:body) do
       {
         'events' => [{
-          'type'       => 'follow',
-          'replyToken' => 'reply_token_001',
-          'source'     => { 'userId' => line_user_id }
+          'type'   => 'follow',
+          'source' => { 'userId' => line_user_id }
         }]
       }
     end
 
-    it 'ウェルカムメッセージを送信する' do
+    it 'ユーザーがDynamoDBに登録される' do
       described_class.handler(event: build_event(body), context: {})
-      expect(line_client_raw).to have_received(:reply_message).with(
-        'reply_token_001',
-        array_including(hash_including(type: 'text'))
-      )
+      expect(db).to have_received(:put_item)
     end
   end
 
-  describe 'メッセージイベント' do
-    def message_event(text)
-      build_event({
-        'events' => [{
-          'type'       => 'message',
-          'replyToken' => 'reply_token_002',
-          'source'     => { 'userId' => line_user_id },
-          'message'    => { 'type' => 'text', 'text' => text }
-        }]
-      })
-    end
-
+  describe 'ブロック（unfollow）イベント' do
     let(:existing_user) do
       {
         'pk' => "USER##{line_user_id}", 'sk' => 'PROFILE',
@@ -89,28 +73,15 @@ RSpec.describe Bondoro::Handlers::Webhook do
 
     before { allow(db).to receive(:get_item).and_return(existing_user) }
 
-    it '「ヘルプ」でコマンド一覧を返す' do
-      described_class.handler(event: message_event('ヘルプ'), context: {})
-      expect(line_client_raw).to have_received(:reply_message).with(
-        anything,
-        array_including(hash_including(text: /コマンド一覧/))
-      )
-    end
-
-    it '「設定」で設定情報を返す' do
-      described_class.handler(event: message_event('設定'), context: {})
-      expect(line_client_raw).to have_received(:reply_message).with(
-        anything,
-        array_including(hash_including(text: /現在の設定/))
-      )
-    end
-
-    it '不明なコマンドでガイドメッセージを返す' do
-      described_class.handler(event: message_event('よろしく'), context: {})
-      expect(line_client_raw).to have_received(:reply_message).with(
-        anything,
-        array_including(hash_including(text: /ヘルプ/))
-      )
+    it '通知が無効化される' do
+      body = {
+        'events' => [{
+          'type'   => 'unfollow',
+          'source' => { 'userId' => line_user_id }
+        }]
+      }
+      described_class.handler(event: build_event(body), context: {})
+      expect(db).to have_received(:update_item)
     end
   end
 end
