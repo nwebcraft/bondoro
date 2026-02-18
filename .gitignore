@@ -12,7 +12,8 @@
 /tmp/
 
 # Bundler
-/.bundle/
+/.bundle/*
+!/.bundle/config
 /vendor/bundle/
 /lib/bundler/man/
 
