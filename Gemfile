@@ -6,6 +6,7 @@ ruby '>= 3.2'
 
 # AWS
 gem 'aws-sdk-dynamodb', '~> 1'
+gem 'aws-sdk-sqs', '~> 1'
 
 # Scraping
 gem 'nokogiri', '~> 1.16'
@@ -17,7 +18,7 @@ gem 'rss', '~> 0.3'
 gem 'faraday', '~> 2'
 
 # LINE Bot
-gem 'line-bot-api', '~> 2'
+gem 'line-bot-api', '~> 1'
 
 # Environment variables
 gem 'dotenv', '~> 3'
