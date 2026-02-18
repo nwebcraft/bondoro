@@ -40,7 +40,7 @@ module Bondoro
           lines << "【#{label}】"
           items.each do |product|
             lines << product.title.to_s
-            lines << "💰 ¥#{product.price}" if product.price
+            lines << "💰 ¥#{product.price.to_i}" if product.price
             lines << "🔗 #{product.url}"
             lines << ''
           end
