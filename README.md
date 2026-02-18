@@ -11,7 +11,6 @@
 - **自動監視**: 楽天市場、Yahoo!ショッピング、アメブロを定期チェック
 - **LINE通知**: 新着情報をLINEプッシュ通知でお届け
 - **重複排除**: 同じ商品の重複通知を防止
-- **カスタマイズ**: 監視キーワードや通知設定を変更可能
 
 ## 技術スタック
 
@@ -67,11 +66,8 @@ EventBridge (Schedule)
 # 依存関係のインストール
 bundle install
 
-# SAMビルド
-sam build
-
-# デプロイ（初回）
-sam deploy --guided
+# ビルド＆デプロイ（.env に環境変数を設定してから）
+make deploy
 ```
 
 ### 環境変数
@@ -86,17 +82,6 @@ LINE_CHANNEL_ACCESS_TOKEN=your_access_token
 RAKUTEN_APP_ID=your_rakuten_app_id
 YAHOO_APP_ID=your_yahoo_app_id
 ```
-
-## LINE Botコマンド
-
-| コマンド | 説明 |
-|---------|------|
-| `設定` | 現在の設定を表示 |
-| `通知ON` | 通知を有効化 |
-| `通知OFF` | 通知を無効化 |
-| `キーワード追加 <word>` | 監視キーワードを追加 |
-| `キーワード削除 <word>` | 監視キーワードを削除 |
-| `ヘルプ` | 使い方を表示 |
 
 ## 開発
 
