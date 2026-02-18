@@ -66,7 +66,7 @@
 
 - [x] 7.1 SAM build/deploy 動作確認
 - [x] 7.2 Lambda Layer（Nokogiri等）設定 ※ `sam build --use-container` でコンテナビルドに対応
-- [ ] 7.3 Secrets Manager または Parameter Store 設定（APIキー管理）
+- [x] 7.3 Secrets Manager または Parameter Store 設定（APIキー管理） ※ CloudFormation NoEcho パラメータで対応（MVP）
 - [x] 7.4 CloudWatch Logs設定（30日保持）
 - [x] 7.5 エラーアラート設定（SNS + CloudWatch Alarm）
 
