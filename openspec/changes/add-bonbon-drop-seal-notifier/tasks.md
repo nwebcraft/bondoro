@@ -40,11 +40,11 @@
 
 ## 4. LINE通知機能実装
 
-- [ ] 4.1 LINE Messaging APIクライアント (`services/line_client.rb`)
-- [ ] 4.2 通知メッセージフォーマッター (`services/message_formatter.rb`)
-- [ ] 4.3 通知サービス (`services/notifier.rb`)
-- [ ] 4.4 Notifier Lambdaハンドラ (`handlers/notifier.rb`)
-- [ ] 4.5 DynamoDB Streams または SQS連携設定
+- [x] 4.1 LINE Messaging APIクライアント (`services/line_client.rb`)
+- [x] 4.2 通知メッセージフォーマッター (`services/message_formatter.rb`)
+- [x] 4.3 通知サービス (`services/notifier.rb`)
+- [x] 4.4 Notifier Lambdaハンドラ (`handlers/notifier.rb`)
+- [x] 4.5 SQS連携設定（SAMテンプレートに含む）
 
 ## 5. LINE Webhook機能実装
 

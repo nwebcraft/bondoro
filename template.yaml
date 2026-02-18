@@ -42,6 +42,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProductsTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt NotificationQueue.QueueName
       Events:
         ScheduleEvent:
           Type: Schedule
