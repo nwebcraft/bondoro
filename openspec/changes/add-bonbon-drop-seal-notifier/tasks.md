@@ -74,7 +74,7 @@
 
 - [x] 8.1 LINE Developersコンソールでチャネル作成
 - [x] 8.2 Messaging API設定
-- [ ] 8.3 Webhook URL設定（デプロイ後に設定）
+- [x] 8.3 Webhook URL設定（デプロイ後に設定）
 - [ ] 8.4 リッチメニュー設定（任意）
 
 ## 9. 外部API設定
