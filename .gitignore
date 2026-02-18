@@ -24,7 +24,7 @@
 
 # AWS SAM
 .aws-sam/
-samconfig.toml
+# samconfig.toml is committed (no sensitive data, only region/stack settings)
 
 # Environment variables
 .env

@@ -30,6 +30,9 @@ Parameters:
   YahooAppId:
     Type: String
     NoEcho: true
+  AlertEmail:
+    Type: String
+    Description: Email address for error alerts
 
 Resources:
   # Lambda Functions
@@ -80,6 +83,73 @@ Resources:
           Properties:
             Path: /webhook
             Method: post
+
+  # CloudWatch Log Groups (with retention)
+  ScraperLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${ScraperFunction}"
+      RetentionInDays: 30
+
+  NotifierLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${NotifierFunction}"
+      RetentionInDays: 30
+
+  WebhookLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${WebhookFunction}"
+      RetentionInDays: 30
+
+  # SNS Topic for error alerts
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: bondoro-alerts
+      Subscription:
+        - Protocol: email
+          Endpoint: !Ref AlertEmail
+
+  # CloudWatch Alarms
+  ScraperErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: bondoro-scraper-errors
+      AlarmDescription: Scraper Lambda error rate
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref ScraperFunction
+      Statistic: Sum
+      Period: 3600
+      EvaluationPeriods: 1
+      Threshold: 3
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref AlertTopic
+
+  NotifierErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: bondoro-notifier-errors
+      AlarmDescription: Notifier Lambda error rate
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref NotifierFunction
+      Statistic: Sum
+      Period: 3600
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref AlertTopic
 
   # SQS Queue
   NotificationQueue:
@@ -136,7 +206,7 @@ Resources:
 
 Outputs:
   WebhookApiUrl:
-    Description: LINE Webhook URL
+    Description: LINE Webhook URL (set this in LINE Developers Console)
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/webhook"
   ScraperFunctionArn:
     Description: Scraper Lambda ARN
@@ -144,3 +214,6 @@ Outputs:
   NotifierFunctionArn:
     Description: Notifier Lambda ARN
     Value: !GetAtt NotifierFunction.Arn
+  AlertTopicArn:
+    Description: SNS Alert Topic ARN
+    Value: !Ref AlertTopic
