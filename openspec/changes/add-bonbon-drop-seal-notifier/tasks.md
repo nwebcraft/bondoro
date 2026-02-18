@@ -48,12 +48,12 @@
 
 ## 5. LINE Webhook機能実装
 
-- [ ] 5.1 Webhook署名検証
-- [ ] 5.2 コマンドパーサー
-- [ ] 5.3 友だち追加イベントハンドラ
-- [ ] 5.4 メッセージイベントハンドラ（コマンド処理）
-- [ ] 5.5 Webhook Lambdaハンドラ (`handlers/webhook.rb`)
-- [ ] 5.6 API Gateway設定（SAMテンプレート）
+- [x] 5.1 Webhook署名検証
+- [x] 5.2 コマンドパーサー
+- [x] 5.3 友だち追加イベントハンドラ
+- [x] 5.4 メッセージイベントハンドラ（コマンド処理）
+- [x] 5.5 Webhook Lambdaハンドラ (`handlers/webhook.rb`)
+- [x] 5.6 API Gateway設定（SAMテンプレートに含む）
 
 ## 6. テスト
 
