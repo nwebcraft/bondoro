@@ -15,6 +15,7 @@ Globals:
         LINE_CHANNEL_ACCESS_TOKEN: !Ref LineChannelAccessToken
         RAKUTEN_APP_ID: !Ref RakutenAppId
         RAKUTEN_ACCESS_KEY: !Ref RakutenAccessKey
+        RAKUTEN_AFFILIATE_ID: !Ref RakutenAffiliateId
         YAHOO_APP_ID: !Ref YahooAppId
         NOTIFICATION_QUEUE_URL: !Ref NotificationQueue
 
@@ -31,6 +32,9 @@ Parameters:
   RakutenAccessKey:
     Type: String
     NoEcho: true
+  RakutenAffiliateId:
+    Type: String
+    Default: ''
   YahooAppId:
     Type: String
     NoEcho: true
@@ -55,7 +59,7 @@ Resources:
         ScheduleEvent:
           Type: Schedule
           Properties:
-            Schedule: rate(3 hours)
+            Schedule: rate(1 hour)
             Enabled: true
 
   NotifierFunction:

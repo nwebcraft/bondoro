@@ -6,7 +6,11 @@ RSpec.describe Bondoro::Scrapers::Rakuten do
   subject(:scraper) { described_class.new }
 
   before do
-    stub_const('ENV', ENV.to_h.merge('RAKUTEN_APP_ID' => 'test_app_id', 'RAKUTEN_ACCESS_KEY' => 'test_access_key'))
+    stub_const('ENV', ENV.to_h.merge(
+      'RAKUTEN_APP_ID'       => 'test_app_id',
+      'RAKUTEN_ACCESS_KEY'   => 'test_access_key',
+      'RAKUTEN_AFFILIATE_ID' => 'test_affiliate_id'
+    ))
   end
 
   describe '#fetch' do
@@ -15,15 +19,16 @@ RSpec.describe Bondoro::Scrapers::Rakuten do
         'Items' => [
           {
             'Item' => {
-              'itemName' => 'ボンボンドロップシール スイーツ柄',
-              'itemUrl'  => 'https://item.rakuten.co.jp/shop/bonbon-001/',
-              'itemPrice' => 980
+              'itemName'     => 'ボンボンドロップシール スイーツ柄',
+              'itemUrl'      => 'https://item.rakuten.co.jp/shop/bonbon-001/',
+              'affiliateUrl' => 'https://hb.afl.rakuten.co.jp/hgc/aff123/bonbon-001/',
+              'itemPrice'    => 980
             }
           },
           {
             'Item' => {
-              'itemName' => 'BONBON DROP シール フルーツ',
-              'itemUrl'  => 'https://item.rakuten.co.jp/shop/bonbon-002/',
+              'itemName'  => 'BONBON DROP シール フルーツ',
+              'itemUrl'   => 'https://item.rakuten.co.jp/shop/bonbon-002/',
               'itemPrice' => 1200
             }
           }
@@ -49,6 +54,16 @@ RSpec.describe Bondoro::Scrapers::Rakuten do
     it 'title, url, priceが含まれる' do
       results = scraper.fetch
       expect(results.first).to include(:title, :url, :price)
+    end
+
+    it 'affiliateUrlが優先される' do
+      results = scraper.fetch
+      expect(results.first[:url]).to eq('https://hb.afl.rakuten.co.jp/hgc/aff123/bonbon-001/')
+    end
+
+    it 'affiliateUrlがない場合はitemUrlにフォールバック' do
+      results = scraper.fetch
+      expect(results.last[:url]).to eq('https://item.rakuten.co.jp/shop/bonbon-002/')
     end
 
     it 'URLの重複が排除される' do

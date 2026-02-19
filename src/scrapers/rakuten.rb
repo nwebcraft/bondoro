@@ -11,8 +11,9 @@ module Bondoro
       MAX_PER_PAGE = 30
 
       def initialize
-        @app_id     = ENV.fetch('RAKUTEN_APP_ID')
-        @access_key = ENV.fetch('RAKUTEN_ACCESS_KEY')
+        @app_id       = ENV.fetch('RAKUTEN_APP_ID')
+        @access_key   = ENV.fetch('RAKUTEN_ACCESS_KEY')
+        @affiliate_id = ENV.fetch('RAKUTEN_AFFILIATE_ID', nil)
       end
 
       def fetch
@@ -41,13 +42,15 @@ module Bondoro
 
       def search(keyword)
         client = http_client(BASE_URL)
-        data = get(client, ENDPOINT, {
+        params = {
           applicationId: @app_id,
           accessKey:     @access_key,
           keyword:       keyword,
           hits:          MAX_PER_PAGE,
           sort:          '-updateTimestamp'
-        })
+        }
+        params[:affiliateId] = @affiliate_id if @affiliate_id && !@affiliate_id.empty?
+        data = get(client, ENDPOINT, params)
 
         return [] unless data&.dig('Items')
 
@@ -60,7 +63,7 @@ module Bondoro
       def parse_item(item)
         {
           title:  item['itemName'],
-          url:    item['itemUrl'],
+          url:    item['affiliateUrl'] || item['itemUrl'],
           price:  item['itemPrice'],
           source: SOURCE
         }
