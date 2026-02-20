@@ -9,6 +9,7 @@ Globals:
     MemorySize: 256
     Environment:
       Variables:
+        RUBYOPT: "-EUTF-8"
         DYNAMODB_PRODUCTS_TABLE: !Ref ProductsTable
         DYNAMODB_USERS_TABLE: !Ref UsersTable
         LINE_CHANNEL_SECRET: !Ref LineChannelSecret
