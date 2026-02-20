@@ -4,7 +4,7 @@ Description: Bondoro - Bonbon Drop Seal Notifier
 
 Globals:
   Function:
-    Runtime: ruby3.2
+    Runtime: ruby3.4
     Timeout: 60
     MemorySize: 256
     Environment:
