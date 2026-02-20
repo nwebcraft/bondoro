@@ -60,7 +60,7 @@ Resources:
         ScheduleEvent:
           Type: Schedule
           Properties:
-            Schedule: rate(1 hour)
+            Schedule: rate(3 hours)
             Enabled: true
 
   NotifierFunction:
